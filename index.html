@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertir Real a Binario</title>
+    <style>
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center; /* Alinear al centro */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Convertir Número Real en Binario</h1>
+    <p>Introduce un número decimal:</p>
+    <input type="number" id="decimal">
+    <input type="button" value="Convertir" onclick="Decimal_to_Real()">
+    <div id="Resultado_binario"></div>
+    <table id="resultTable">
+        <thead>
+            <tr>
+                <th>Sign</th>
+                <th>Exponent</th>
+                <th>Mantissa</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+    <script>
+        function Decimal_to_Real() {
+            const tbody = document.getElementById('resultTable').getElementsByTagName('tbody')[0];
+            let decimal = parseFloat(document.getElementById('decimal').value); //convertir el numero en decimal con parseFloat
+            // Determinar el signo
+            let sign;
+            if (decimal < 0){
+                sign = 1;
+            } else {
+                sign = 0;
+            }
+            decimal = Math.abs(decimal);
+
+            let exponent = 0;
+            let mantissa = 0;
+
+            if (decimal == 0) { // Si el número es cero
+                exponent = 0;
+                mantissa = 0;
+            } else {
+                while (decimal >= 2) {
+                    decimal /= 2;
+                    exponent++;
+                }
+                while (decimal < 1) {
+                    decimal *= 2;
+                    exponent--;
+                }
+
+                // Ajustar el exponente
+                exponent += 127;
+
+                // Obtener la parte fraccionaria (mantissa)
+                decimal -= 1;
+                mantissa = Math.floor(decimal * Math.pow(2, 23));
+            }
+
+            // Formatear a 32 bits
+            let binarySign = sign.toString(2);
+            let binaryExponent = exponent.toString(2).padStart(8, '0');
+            let binaryMantissa = mantissa.toString(2).padStart(23, '0');
+            let space = " ";
+
+            tbody.innerHTML = '';
+
+            // Ejemplos de cálculos
+            const resultados = [
+                { sign_t: binarySign, exponent_t: binaryExponent ,mantissa_t:binaryMantissa}
+            ];
+
+            // Agregar resultados a la tabla
+            resultados.forEach(item => {
+                const row = tbody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                cell1.innerText = item.sign_t;
+                cell2.innerText = item.exponent_t;
+                cell3.innerText = item.mantissa_t;
+            });
+        }
+        
+    </script>
+</body>
+
+</html>
